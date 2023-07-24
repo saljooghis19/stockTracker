@@ -1,34 +1,92 @@
 import finnhub
-import requests
 import pandas as pd
 import datetime
+# import matplotlib.pyplot as plt
+import mplfinance as mpf
 
 finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
 
-
 def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
-    print(pd.DataFrame(finnhub_client.technical_indicator(
-    symbol=f"{ticker_symbol}",
-    resolution="D",
-    _from={start_unix_time}, #user input from start_date
-    to={end_unix_time},   #user input from end_date
-    indicator="rsi",
-    indicator_fields={"timeperiod": 6},
-)))
+    data = finnhub_client.stock_candles(
+        symbol=f"{ticker_symbol}",
+        resolution="D",
+        _from=start_unix_time,
+        to=end_unix_time,
+        # indicator="rsi",
+        # indicator_fields={"timeperiod": 6},
+    )
+    # turn the data we get from the stock and convert it into cleaner look using DataFrame which is passed on from data
+    df = pd.DataFrame(data)
+    df['t'] = pd.to_datetime(df['t'], unit='s')  
+    df.rename(columns={'o': 'Open', 'h': 'High', 'l': 'Low', 'c': 'Close'}, inplace=True)  # mplfinance cant read o, h, l, c -> rename it to Open, High, etc...
+    df.set_index('t', inplace=True) #pass the parameter t which reads column named t in the DataFrame, setting it to true makes the apply work correctly without ommiting format
+
+    mpf.plot(df, type='candle', title=f'{ticker_symbol} Daily Candlestick Chart')
+
+    # plt.figure(figsize=(12, 6))
+    # plt.plot(df['t'], df['c'], label='Closing price', color='blue')
+    # plt.xlabel('Date')
+    # plt.ylabel('Price')
+    # plt.title(f'{ticker_symbol} RSI Analysis')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
 
+# Convert UNIX timestamp to datetime with the user input date we get
 user_ticker = input("Enter the stock ticker symbol: ").upper()
-
-start_date = input("enter your start date: (format m/d/yyyy)")       
-end_date = input("enter your end date: ")
+start_date = input("Enter your start date (format m/d/yyyy): ")
+end_date = input("Enter your end date (format m/d/yyyy): ")
 start_date_format = datetime.datetime.strptime(start_date, "%m/%d/%Y")
 end_date_format = datetime.datetime.strptime(end_date, "%m/%d/%Y")
 start_unix_time = int(datetime.datetime.timestamp(start_date_format))
 end_unix_time = int(datetime.datetime.timestamp(end_date_format))
-print(int(start_unix_time))
-print(int(end_unix_time))
 
 get_stock_data(user_ticker, start_unix_time, end_unix_time)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import finnhub
+# import requests
+# import pandas as pd
+# import datetime
+
+# finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
+
+
+# def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
+#     print(pd.DataFrame(finnhub_client.technical_indicator(
+#     symbol=f"{ticker_symbol}",
+#     resolution="D",
+#     _from={start_unix_time}, #user input from start_date
+#     to={end_unix_time},   #user input from end_date
+#     indicator="rsi",
+#     # indicator_fields={"timeperiod": 6},
+# )))
+
+
+# user_ticker = input("Enter the stock ticker symbol: ").upper()
+
+# start_date = input("enter your start date: (format m/d/yyyy)")       
+# end_date = input("enter your end date: ")
+# start_date_format = datetime.datetime.strptime(start_date, "%m/%d/%Y")
+# end_date_format = datetime.datetime.strptime(end_date, "%m/%d/%Y")
+# start_unix_time = int(datetime.datetime.timestamp(start_date_format))
+# end_unix_time = int(datetime.datetime.timestamp(end_date_format))
+# # print(int(start_unix_time))
+# # print(int(end_unix_time))
+
+# get_stock_data(user_ticker, start_unix_time, end_unix_time)
 
 
 
