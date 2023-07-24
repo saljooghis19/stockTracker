@@ -7,21 +7,41 @@ import mplfinance as mpf
 finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
 
 def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
-    data = finnhub_client.stock_candles(
+    data = pd.DataFrame(finnhub_client.stock_candles(
         symbol=f"{ticker_symbol}",
         resolution="D",
         _from=start_unix_time,
         to=end_unix_time,
-        # indicator="rsi",
+        indicator="rsi",
         # indicator_fields={"timeperiod": 6},
-    )
-    # turn the data we get from the stock and convert it into cleaner look using DataFrame which is passed on from data
-    df = pd.DataFrame(data)
-    df['t'] = pd.to_datetime(df['t'], unit='s')  
-    df.rename(columns={'o': 'Open', 'h': 'High', 'l': 'Low', 'c': 'Close'}, inplace=True)  # mplfinance cant read o, h, l, c -> rename it to Open, High, etc...
-    df.set_index('t', inplace=True) #pass the parameter t which reads column named t in the DataFrame, setting it to true makes the apply work correctly without ommiting format
+        
+    ))
+    print(data)
 
-    mpf.plot(df, type='candle', title=f'{ticker_symbol} Daily Candlestick Chart')
+def averageStock(ticker_symbol, start_unix_time, end_unix_time):
+    data = finnhub_client.stock_candles(
+        symbol=f"{ticker_symbol}",
+        resolution="D",
+        _from=start_unix_time,
+        to=end_unix_time
+    )
+
+    if 'c' not in data or not data['c']:
+        return None or 0
+    closing_prices = data['c']
+    average_price = sum(closing_prices) / len(closing_prices)
+    
+    return average_price
+    
+
+    
+    # turn the data we get from the stock and convert it into cleaner look using DataFrame which is passed on from data
+    # df = pd.DataFrame(data)
+    # df['t'] = pd.to_datetime(df['t'], unit='s')  
+    # df.rename(columns={'o': 'Open', 'h': 'High', 'l': 'Low', 'c': 'Close'}, inplace=True)  # mplfinance cant read o, h, l, c -> rename it to Open, High, etc...
+    # df.set_index('t', inplace=True) #pass the parameter t which reads column named t in the DataFrame, setting it to true makes the apply work correctly without ommiting format
+
+    # mpf.plot(df, type='candle', title=f'{ticker_symbol} Daily Candlestick Chart')
 
     # plt.figure(figsize=(12, 6))
     # plt.plot(df['t'], df['c'], label='Closing price', color='blue')
@@ -43,6 +63,15 @@ start_unix_time = int(datetime.datetime.timestamp(start_date_format))
 end_unix_time = int(datetime.datetime.timestamp(end_date_format))
 
 get_stock_data(user_ticker, start_unix_time, end_unix_time)
+
+avg_price = averageStock(user_ticker, start_unix_time, end_unix_time)
+
+# Check if the result is not None before printing
+if avg_price is not None:
+    print(f"Average Stock Price for {user_ticker}: ${avg_price}")
+else:
+    print(f"No data available for {user_ticker} within the specified date range.")
+
 
 
 
@@ -87,18 +116,6 @@ get_stock_data(user_ticker, start_unix_time, end_unix_time)
 # # print(int(end_unix_time))
 
 # get_stock_data(user_ticker, start_unix_time, end_unix_time)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
