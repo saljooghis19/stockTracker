@@ -6,6 +6,12 @@ import mplfinance as mpf
 
 finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
 
+def get_stock_news(ticker_symbol):
+    news = finnhub_client.company_news(symbol=ticker_symbol, from_=start_unix_time, to=end_unix_time )
+    return news
+
+
+
 def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
     data = pd.DataFrame(finnhub_client.stock_candles(
         symbol=f"{ticker_symbol}",
@@ -55,6 +61,17 @@ if avg_price is not None:
     print(f"Average Stock Price for {user_ticker}: ${avg_price}")
 else:
     print(f"No data available for {user_ticker} within the specified date range.")
+
+news = get_stock_news(user_ticker)
+
+if news and 'items' in News:
+    print("Latest News for", user_ticker)
+    for item in news['items']:
+        print(item['headline'])
+        print(item['url'])
+        print("------")
+else:
+    print(f"No news is available for {user_ticker}")
 
 # ---------------------------------------------------------
 
