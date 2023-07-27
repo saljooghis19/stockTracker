@@ -34,23 +34,7 @@ def averageStock(ticker_symbol, start_unix_time, end_unix_time):
     return average_price
     
 
-    
-    # turn the data we get from the stock and convert it into cleaner look using DataFrame which is passed on from data
-    # df = pd.DataFrame(data)
-    # df['t'] = pd.to_datetime(df['t'], unit='s')  
-    # df.rename(columns={'o': 'Open', 'h': 'High', 'l': 'Low', 'c': 'Close'}, inplace=True)  # mplfinance cant read o, h, l, c -> rename it to Open, High, etc...
-    # df.set_index('t', inplace=True) #pass the parameter t which reads column named t in the DataFrame, setting it to true makes the apply work correctly without ommiting format
-
-    # mpf.plot(df, type='candle', title=f'{ticker_symbol} Daily Candlestick Chart')
-
-    # plt.figure(figsize=(12, 6))
-    # plt.plot(df['t'], df['c'], label='Closing price', color='blue')
-    # plt.xlabel('Date')
-    # plt.ylabel('Price')
-    # plt.title(f'{ticker_symbol} RSI Analysis')
-    # plt.legend()
-    # plt.grid(True)
-    # plt.show()
+  
 
 
 # Convert UNIX timestamp to datetime with the user input date we get
@@ -72,18 +56,34 @@ if avg_price is not None:
 else:
     print(f"No data available for {user_ticker} within the specified date range.")
 
+# ---------------------------------------------------------
+
+
+
+  
+    # turn the data we get from the stock and convert it into cleaner look using DataFrame which is passed on from data
+    # df = pd.DataFrame(data)
+    # df['t'] = pd.to_datetime(df['t'], unit='s')  
+    # df.rename(columns={'o': 'Open', 'h': 'High', 'l': 'Low', 'c': 'Close'}, inplace=True)  # mplfinance cant read o, h, l, c -> rename it to Open, High, etc...
+    # df.set_index('t', inplace=True) #pass the parameter t which reads column named t in the DataFrame, setting it to true makes the apply work correctly without ommiting format
+
+    # mpf.plot(df, type='candle', title=f'{ticker_symbol} Daily Candlestick Chart')
+
+    # plt.figure(figsize=(12, 6))
+    # plt.plot(df['t'], df['c'], label='Closing price', color='blue')
+    # plt.xlabel('Date')
+    # plt.ylabel('Price')
+    # plt.title(f'{ticker_symbol} RSI Analysis')
+    # plt.legend()
+    # plt.grid(True)
+    # plt.show()
 
 
 
 
 
 
-
-
-
-
-
-
+# -----------------------------------------------------
 
 # import finnhub
 # import requests
