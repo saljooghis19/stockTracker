@@ -137,34 +137,3 @@ else:
 
 # print(tickerid, symbol, "Open: " + open + ",", "Close:"  + close + ",", "High: " + high + ",", "Low: " + low )
 
-
-# import requests
-
-# def fetch_stock_data_by_ticker(ticker_symbol):
-#     url = f"https://quotes-gw.webullfintech.com/api/bgw/quote/realtime?symbols={ticker_symbol}&includeSecu=1&more=1"
-#     try:
-#         r = requests.get(url)
-#         r.raise_for_status()  # Raise an exception if the response status code is an error
-#         data = r.json()
-#         if not data or 'error' in data or 'data' not in data:
-#             print("Error: Stock data not found for the provided ticker.")
-#             return
-
-#         index = data['data'][0]
-#         ticker_id = index['tickerId']
-#         symbol = index['symbol']
-#         open_price = index['open']
-#         close_price = index['close']
-#         high_price = index['high']
-#         low_price = index['low']
-#         print(f"Ticker ID: {ticker_id}, Symbol: {symbol}, Open: {open_price}, Close: {close_price}, High: {high_price}, Low: {low_price}")
-#     except requests.exceptions.RequestException as e:
-#         print("Error: Unable to fetch data. Please check your internet connection or try again later.")
-#         return
-#     except KeyError as e:
-#         print("Error: Invalid data received from the API.")
-#         return
-
-# # Ask the user to input a ticker symbol
-# user_ticker = input("Enter the ticker symbol of the stock you want to fetch: ")
-# fetch_stock_data_by_ticker(user_ticker)
