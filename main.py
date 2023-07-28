@@ -8,7 +8,7 @@ finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je
 
 
 def parse_date(date_str):
-    # Check if the input matches m/d/yyyy format
+    # Check if the input matches m/d/yyyy format, if it does it converts it into yyyy/mm/dd
     if "/" in date_str:
         date_format = "%m/%d/%Y"
     else:
