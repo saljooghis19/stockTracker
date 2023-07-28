@@ -6,8 +6,26 @@ import mplfinance as mpf
 
 finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
 
-def get_stock_news(ticker_symbol):
-    news = finnhub_client.company_news(symbol=ticker_symbol, from_=start_unix_time, to=end_unix_time )
+
+def parse_date(date_str):
+    # Check if the input matches m/d/yyyy format
+    if "/" in date_str:
+        date_format = "%m/%d/%Y"
+    else:
+        date_format = "%Y-%m-%d"
+
+    try:
+        date_format_parsed = datetime.datetime.strptime(date_str, date_format)
+    except ValueError:
+        raise ValueError("Invalid date format. Please use either m/d/yyyy or yyyy-mm-dd.")
+
+    return date_format_parsed
+
+
+def get_stock_news(ticker_symbol, start_date, end_date):
+    start_date_format = parse_date(start_date).strftime("%Y-%m-%d")
+    end_date_format = parse_date(end_date).strftime("%Y-%m-%d")
+    news = finnhub_client.company_news(symbol=ticker_symbol, _from=start_date_format, to=end_date_format)
     return news
 
 
@@ -44,7 +62,7 @@ def averageStock(ticker_symbol, start_unix_time, end_unix_time):
 
 
 # Convert UNIX timestamp to datetime with the user input date we get
-user_ticker = input("Enter the stock ticker symbol: ").upper()
+user_ticker = input("Enter the stock ticker symbol: ").upper() 
 start_date = input("Enter your start date (format m/d/yyyy): ")
 end_date = input("Enter your end date (format m/d/yyyy): ")
 start_date_format = datetime.datetime.strptime(start_date, "%m/%d/%Y")
@@ -62,9 +80,9 @@ if avg_price is not None:
 else:
     print(f"No data available for {user_ticker} within the specified date range.")
 
-news = get_stock_news(user_ticker)
+news = get_stock_news(user_ticker, start_date, end_date)
 
-if news and 'items' in News:
+if news and 'items' in news:
     print("Latest News for", user_ticker)
     for item in news['items']:
         print(item['headline'])
