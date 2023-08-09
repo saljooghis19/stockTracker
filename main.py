@@ -100,7 +100,7 @@ else:
 export_data = input("Do you want to export the data to a CSV file? (yes/no): ").lower()
 
 if export_data == "yes":
-    # Create a list of dictionaries with the data you want to export
+    # Create a list of dictionaries with the data you want to export, currently not working. need to fix line 109 as it is not retrieving data
     data_to_export = []
 
     for index, row in stock_data.iterrows():
@@ -113,7 +113,7 @@ if export_data == "yes":
     
     print(data_to_export)
 
-    # Specify the filename for the CSV file
+    # Specify the filename for the CSV file from the ticker selected
     csv_filename = f"{user_ticker}_data.csv"
 
     # Export the data to the CSV file
