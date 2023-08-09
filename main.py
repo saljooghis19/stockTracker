@@ -29,7 +29,6 @@ def get_stock_news(ticker_symbol, start_date, end_date):
     return news
 
 
-
 def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
     data = pd.DataFrame(finnhub_client.stock_candles(
         symbol=f"{ticker_symbol}",
@@ -38,7 +37,6 @@ def get_stock_data(ticker_symbol, start_unix_time, end_unix_time):
         to=end_unix_time,
         indicator="rsi",
         # indicator_fields={"timeperiod": 6},
-        
     ))
     print(data)
 
@@ -56,9 +54,6 @@ def averageStock(ticker_symbol, start_unix_time, end_unix_time):
     average_price = sum(closing_prices) / len(closing_prices)
     
     return average_price
-    
-
-  
 
 
 # Convert UNIX timestamp to datetime with the user input date we get
@@ -80,16 +75,26 @@ if avg_price is not None:
 else:
     print(f"No data available for {user_ticker} within the specified date range.")
 
-news = get_stock_news(user_ticker, start_date, end_date)
+# Ask if the user wants to see the news
+show_news = input("Do you want to see the news for this stock? (yes/no): ").lower()
 
-if news and 'items' in news:
-    print("Latest News for", user_ticker)
-    for item in news['items']:
-        print(item['headline'])
-        print(item['url'])
-        print("------")
+# Get news using the correctly formatted dates, only if the user wants to see it
+if show_news == "yes":
+    news = get_stock_news(user_ticker, start_date_format.strftime("%Y-%m-%d"), end_date_format.strftime("%Y-%m-%d"))
+
+    if news and 'items' in news:
+        print("Latest News for", user_ticker)
+        for item in news['items']:
+            print(item['headline'])
+            print(item['url'])
+            print("------")
+    else:
+        print(f"No news is available for {user_ticker}")
 else:
-    print(f"No news is available for {user_ticker}")
+    print("News display is skipped.")
+
+
+
 
 # ---------------------------------------------------------
 
