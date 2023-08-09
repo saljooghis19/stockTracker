@@ -1,10 +1,13 @@
 import finnhub
 import pandas as pd
 import datetime
+from config import API_KEY
 # import matplotlib.pyplot as plt
 import mplfinance as mpf
 
-finnhub_client = finnhub.Client(api_key="ciu35ihr01qkv67u3jdgciu35ihr01qkv67u3je0")
+finnhub_client = finnhub.Client(api_key=API_KEY)
+
+stock_data = pd.DataFrame()
 
 
 def parse_date(date_str):
@@ -87,13 +90,41 @@ if show_news == "yes":
         for item in news['items']:
             print(item['headline'])
             print(item['url'])
-            print("------")
+            
     else:
         print(f"No news is available for {user_ticker}")
 else:
     print("News display is skipped.")
 
+# Ask if the user wants to export the data
+export_data = input("Do you want to export the data to a CSV file? (yes/no): ").lower()
 
+if export_data == "yes":
+    # Create a list of dictionaries with the data you want to export
+    data_to_export = []
+
+    for index, row in stock_data.iterrows():
+        data_entry = {
+            "Date": datetime.datetime.fromtimestamp(row['t']).strftime("%Y-%m-%d"),
+            "Open": row['o'],
+            
+        }
+        data_to_export.append(data_entry)
+    
+    print(data_to_export)
+
+    # Specify the filename for the CSV file
+    csv_filename = f"{user_ticker}_data.csv"
+
+    # Export the data to the CSV file
+    try:
+        df = pd.DataFrame(data_to_export)
+        df.to_csv(csv_filename, index=False)
+        print(f"Data exported to {csv_filename} successfully.")
+    except Exception as e:
+        print(f"Error exporting data: {e}")
+else:
+    print("Data export is skipped.")
 
 
 # ---------------------------------------------------------
