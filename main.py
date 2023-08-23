@@ -6,6 +6,7 @@ from config import API_KEY
 finnhub_client = finnhub.Client(api_key=API_KEY)
 
 class StockAnalyzer:
+    #Takes users reg date format and translatess it to UNIX format. Needed for API to read.
     def __init__(self, ticker_symbol, start_date, end_date):
         self.ticker_symbol = ticker_symbol
         self.start_date = start_date
@@ -15,7 +16,7 @@ class StockAnalyzer:
         self.start_unix_time = int(datetime.datetime.timestamp(self.start_date_format))
         self.end_unix_time = int(datetime.datetime.timestamp(self.end_date_format))
 
-    def parse_date(self, date_str):
+    def parse_date(self, date_str):         # checks the format of the date given. will then format it for different use.
         if "/" in date_str:
             date_format = "%m/%d/%Y"
         else:
@@ -28,12 +29,15 @@ class StockAnalyzer:
 
         return date_format_parsed
 
+
+    # -still needs fix after API update. date format is not the same as __init__ 
     def get_stock_news(self):
         start_date_format = self.parse_date(self.start_date).strftime("%Y-%m-%d")
         end_date_format = self.parse_date(self.end_date).strftime("%Y-%m-%d")
         news = finnhub_client.company_news(symbol=self.ticker_symbol, _from=start_date_format, to=end_date_format)
         return news
 
+    #using pandas to format the information given to us within the API
     def get_stock_data(self):
         data = pd.DataFrame(finnhub_client.stock_candles(
             symbol=f"{self.ticker_symbol}",
@@ -44,7 +48,7 @@ class StockAnalyzer:
             # indicator_fields={"timeperiod": 6},
         ))
         print(data)
-
+    #gets average price of {stock_candle} and gets the average of the stock for the given dates.
     def average_stock(self):
         data = finnhub_client.stock_candles(
             symbol=f"{self.ticker_symbol}",
@@ -85,9 +89,11 @@ class StockAnalyzer:
 
         export_data = input("Do you want to export the data to a CSV file? (yes/no): ").lower()
 
+
+        #currently not outputting the results. Need to do deeper dive into API check
         if export_data == "yes":
             data_to_export = []
-            # ... (loop and data export logic)
+           
 
             csv_filename = f"{self.ticker_symbol}_data.csv"
 
@@ -100,7 +106,7 @@ class StockAnalyzer:
         else:
             print("Data export is skipped.")
 
-# Main execution
+# Asks for user input then calls the main function.
 user_ticker = input("Enter the stock ticker symbol: ").upper()
 start_date = input("Enter your start date (format m/d/yyyy): ")
 end_date = input("Enter your end date (format m/d/yyyy): ")
